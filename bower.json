@@ -1,0 +1,25 @@
+{
+  "name": "tracker",
+  "description": "",
+  "main": "createDb.js",
+  "authors": [
+    "Chris Grimmett <chris@grimtech.net>"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/components/",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "handlebars": "^4.0.5",
+    "jquery": "^2.2.2",
+    "bootstrap": "^3.3.6"
+  }
+}

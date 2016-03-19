@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GRUNTMEISTER 9001</title>
+    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap-theme.css">
+    <style>
+      body {
+        font-family: Tahoma, Geneva, sans-serif;
+      }
+
+      .small {
+        font-size: 8px;
+      }
+    </style>
+
+  </head>
+  <body>
+    <div class="container">
+      <strong>Devices discovered on the network</strong><br>
+      <div id="table"></div>
+      
+      <div id="raw"></div>
+    </div> <!-- /.container -->
+
+    <script src="components/jquery/dist/jquery.min.js" type="text/javascript"></script>
+    <script src="components/handlebars/handlebars.min.js" type="text/javascript"></script>
+
+    <script>
+      function tpl(template, target, body) {
+        var source   = $(template).html();
+        var template = Handlebars.compile(source);
+        var context = {body: body};
+        var html = template(context);
+        $(target).html(html);
+      }
+
+
+      function updateStats(memuse) {
+        document.getElementById('rss').innerHTML = memuse.rss;
+        document.getElementById('heapTotal').innerHTML = memuse.heapTotal;
+        document.getElementById('heapUsed').innerHTML = memuse.heapUsed;
+      }
+
+      var host = window.document.location.host.replace(/:.*/, '');
+      var ws = new WebSocket('ws://' + host + ':4080');
+      ws.onmessage = function (event) {
+        //updateStats(JSON.parse(event.data));
+        tpl("#raw-template", "#raw", JSON.parse(event.data));
+        console.log('msg');
+      };
+    </script>
+    
+    <script id="device-template" type="text/x-handlebars-template">
+      <table class="device-table">
+	<thead>
+	  <tr>
+	    <th>IP Address</th>
+	    <th>MAC Address</th>
+	    <th>Discovery Count</th>
+	    <th>Length</th>
+	    <th>MAC Vendor</th>
+	    <th>Known Name</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  {{ body }}
+	</tbody>
+      </table>
+    </script>
+
+    <script id="raw-template" type="text/x-handlebars-template">
+      <div class="panel panel-default">
+	<div class="panel-heading">
+	  Raw Message
+	</div>
+	<div class="panel-body">
+	  <p class="small">{{ body }}</p>
+	</div>
+      </div>
+    </script>
+    
+  </body>
+</html>
