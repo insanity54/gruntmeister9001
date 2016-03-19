@@ -17,9 +17,15 @@ wss.on('connection', function connection(ws) {
 	console.log('received message from client: %s', message);
     });
     
-    worker.on('message', function(output) {
-	console.log('got message from worker');
-	ws.send(JSON.stringify(output.toString()));
+    // worker.on('message', function(output) {
+    // 	console.log('got message from worker');
+    // 	ws.send(JSON.stringify(output.toString()));
+    // });
+
+    worker.on('parsed', function() {
+	worker.getData(function(err, data) {
+	    ws.send(JSON.stringify(data));
+	});
     });
     
 });

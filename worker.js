@@ -39,13 +39,12 @@ function lookup(mac, cb) {
 
 
 /* parse output */
-function parseOutput(cb) {
-    if (typeof this.output === 'undefined')
-	throw new Error('parseOutput() needs access to this.output');
+Worker.prototype.parse = function parse(output, cb) {
+    var self = this;
 
     var machines = [];
     var results;
-    while ((results = parser.exec(this.output)) !== null) {
+    while ((results = parser.exec(output)) !== null) {
 	var machine = {};
 	machine["ip"] = results[1];
 	machine["mac"] = results[2];
@@ -54,69 +53,26 @@ function parseOutput(cb) {
 	machine["vendor"] = results[5];
 	machine["idk"] = results[6];
 
-	db.update({ "mac": machine["mac"] }, machine, { upsert: true }, function(err, numAffected, docs) {
+	db.update({ "mac": machine["mac"] }, machine, { upsert: true }, function(err, numAffected, doc, upsert) {
 	    if (err) throw err;
+	    if (upsert) {
+		self.emit('new', doc);
+	    }
 	});
     }
+
+    self.emit('parsed');
     return cb(null);
 }
 
 
-/* add friendly name if mac is known */
-function friendlify(cb) {
+Worker.prototype.getData = function getData(cb) {
+    var self = this;
 
-    //console.log('friendly');
-    //console.log(this.parsed.length);
-
-    console.log(this.parsed);
-    
-    var pCounter = 0;
-    var pMax = this.parsed.length;
-    console.log('pmax '+pMax);
-    for (var i=0; i<this.parsed.length; i++) { // machines
-	//console.log(this.parsed[i].mac);
-	var num = i;
-	db.findOne({ mac: this.parsed[num].mac }, function(err, doc) {
-	    if (err) throw err;
-	    if (doc) {
-		console.log('doc found');
-		console.log(doc);
-		this.parsed[num]["name"] = doc.name;
-	    }
-	    
-	    // increment, and exit if this is last processed
-	    pCounter ++;
-	    if (pCounter == pMax) {
-		console.log('max');
-		return cb(null);
-	    }
-	});
-    }
-}
-
-
-
-
-/** control flow for when data is received from netdiscover */
-function process(data, cb) {
-    var context = {
-	output: data.toString(),
-	parsed: null
-    };
-
-    //console.log('>> '+context.output);
-    
-    async.series([
-	parseOutput.bind(context),
-	//friendlify.bind(context)
-    ], function(err, d) {
-	if (err) throw err;
-	//console.log('process complete');
-	cb(null, d);
+    db.find({}, function(err, docs) {
+	return cb(null, docs);
     });
 }
-
-
 
 
 
@@ -142,7 +98,7 @@ function Worker() {
     n.on('data', function(data) {
 	console.log('>>>> got data from netdisco >>>> ' + rando());
 	self.emit('message', data);	
-	process(data, function(err, d) {
+	self.parse(data, function(err, d) {
 	    if (err) throw err;
 	});
     });
