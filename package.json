@@ -5,6 +5,7 @@
   "main": "createDb.js",
   "dependencies": {
     "chance": "^1.0.1",
+    "cli-table": "^0.3.1",
     "express": "^4.13.4",
     "nedb": "^1.8.0",
     "ws": "^1.0.1"
