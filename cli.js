@@ -46,8 +46,8 @@ if (argv._[0] === 'add') {
 	'url': apiEndpoint,
 	'form': {
 	    'add': true,
-	    'name': argv_[1],
-	    'mac': argv_[2]
+	    'name': argv._[1],
+	    'mac': argv._[2]
 	}
     }, function(err, httpResponse, body) {
 	if (err) throw err;
@@ -55,9 +55,10 @@ if (argv._[0] === 'add') {
 	    throw new Error('did not receive HTTP code 200 from api server. got instead '+httpResponse.statusCode);
 	}
 
+	body = JSON.parse(body);
 	if (!body) throw new Error('no body received from API call');
-	if (!body.devices) throw new Error('no device list received from API call');
-	//displayData(body.devices);
+	if (!body.added) throw new Error('server did not add a device');
+	console.log(body.added+' has been added');
     });
 		 
 }
@@ -109,8 +110,12 @@ else if (argv._[0] === 'find') {
 	if (httpResponse.statusCode !== 200) {
 	    throw new Error('did not receive HTTP code 200 from api server. got instead '+httpResponse.status);
 	}
-	
-	console.log(body);
+
+	body = JSON.parse(body);
+	if (!body) throw new Error('no body received from API call');
+	if (!body.found) throw new Error('server did not respond with a found device');
+
+	console.log(body.found);
     });
 }
 

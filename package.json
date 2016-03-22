@@ -4,6 +4,7 @@
   "description": "",
   "main": "createDb.js",
   "dependencies": {
+    "body-parser": "^1.15.0",
     "chance": "^1.0.1",
     "cli-table": "^0.3.1",
     "express": "^4.13.4",
