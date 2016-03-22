@@ -39,13 +39,22 @@
 	  <div id="raw"></div>
 	</div>
       </div>
+
+      <!-- test audio -->
+      <div id="test-area" class="well">
+	<button id="speakButton" class="button button-default">Test Audio</button>
+      </div>
       
     </div> <!-- /.container -->
 
     <script src="components/jquery/dist/jquery.min.js" type="text/javascript"></script>
     <script src="components/handlebars/handlebars.min.js" type="text/javascript"></script>
+    <script src="components/mespeak/mespeak.js" type="text/javascript"></script>    
 
     <script>
+      meSpeak.loadConfig("components/mespeak/mespeak_config.json");
+      meSpeak.loadVoice('components/mespeak/voices/en/en-us.json');
+      
       function tpl(template, target, context) {
         var source = $(template).html();
         var template = Handlebars.compile(source);
@@ -62,11 +71,30 @@
 
       var host = window.document.location.host.replace(/:.*/, '');
       var ws = new WebSocket('ws://' + host + ':4080');
+
+      // what to do when data is received
       ws.onmessage = function (event) {
-        //updateStats(JSON.parse(event.data));
-        tpl("#device-template", "#table", JSON.parse(event.data));
-        console.log('msg');
+
+        var d = JSON.parse(event.data);
+      
+        if (d.devices) {
+          // a general update where something has changed            
+          tpl("#device-template", "#table", d.devices);
+        }
+      
+        if (d.newDevice) {
+          // a update where a new device was detected
+          meSpeak.speak('New device ' + d.newDevice.mac);
+          console.log('msg');
+        }
       };
+      
+
+      $('#speakButton').on('click', function (e) {
+        console.log('button press');
+        meSpeak.speak('Hello, Mack miceter 3000!');
+      });
+      
     </script>
     
     <script id="device-template" type="text/x-handlebars-template">
