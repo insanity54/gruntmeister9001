@@ -2,7 +2,7 @@
   "name": "macmeister3000",
   "version": "1.0.0",
   "description": "",
-  "main": "createDb.js",
+  "main": "index.js",
   "dependencies": {
     "body-parser": "^1.15.0",
     "chance": "^1.0.1",
