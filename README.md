@@ -1,5 +1,7 @@
 # MACMEISTER-3000
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/insanity54/gruntmeister9001.svg)](https://greenkeeper.io/)
+
 
 Tor was standing outside his run down electronics shop in a forgotten sector of a busy megatropolalus. He breathed in the polluted air, which was somehow a relief from ten minutes ago when he was indoors. It was rainy and dark, and a couple working streetlights cast rays on the wet cracked concrete. Above the lamps, Tor glanced at the defunct monorail which passed overhead. It was covered in moss, something that seemed to happen to everything in the area. There were a couple people walking down the street, one carrying a tattered bag with soiled, thankful smiley faces. No cars here, but their noise was ever present in the distance. Across the street, huddled in newspapers, a shoeless, grey haired homeless man sheltered himself from the rain. Tor pulled out his iCig, which he jailbroke last week, and wondered, "How the hell did that guy find newspapers in this day-and-age?"
 
